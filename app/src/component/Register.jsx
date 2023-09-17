@@ -5,6 +5,10 @@ import swal from 'sweetalert2';
 // import {useHistory} from 'react-router-dom';
 import {useNavigate} from 'react-router-dom';
 
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify';
+
+
 function Register() {
  const navigate=useNavigate();
 
@@ -15,6 +19,7 @@ function Register() {
   const [ephoto, setEmpphoto] = useState("");
   const [photo, setphoto] = useState("");
   const [msg, setMessage] = useState("");;
+  const [wait,setwait]=useState(false);
   
 
   const onChangeEmpfName = (e) => setEmpfName(e.target.value);
@@ -88,37 +93,53 @@ function Register() {
     console.log(`NAME: ${efname}`);
     console.log(`EMAIL: ${eemail}`);
     // console.log(`photo: ${photo}`);
-    const empinfo = {
-      empfname: efname,
-      emplname: elname,
-      empemail: eemail,
+    let empinfo=new FormData();
+    empinfo.append("myfiles",ephoto);
+    empinfo.append("empfname",efname);
+    empinfo.append("emplname",elname);
+    empinfo.append("empemail",eemail);
+    empinfo.append("emppass",epass);
+  //   let empinfo0 = {
+  //     empfname: efname,
+  //     emplname: elname,
+  //     empemail: eemail,
       
-      emppass: epass,
+  //     emppass: epass,
       
      
-  }
+  // }
 
    
-    const data=new FormData();
+  //  const data=new FormData();
     
-    data.append("myfiles",ephoto);
-   await axios.post('/photo',data,  { headers: {'Content-Type': 'multipart/form-data'}})
-    .then(res=>{
-      console.log(res.data);
+  //   data.append("myfiles",ephoto);
+  //  await axios.post('http://localhost:5000/photo',data,  { headers: {'Content-Type': 'multipart/form-data'}})
+  //   .then(res=>{
+  //     console.log(res.data);
       
-      empinfo["image"]=res.data;
-    })
+  //     empinfo["image"]=res.data;
+   // })
     // data.append('username',name);
    
     
-    console.log(data);  
+  //  console.log(data);  
     
   console.log(empinfo)
- 
+  toast.warning('Please Wait  we create your account!', {
+          position: "TOP_LEFT",
+          autoClose: 8000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+    theme :"colored"
+        });
   
-     axios.post('/register', empinfo)
+     axios.post('/register', empinfo, { headers: {'Content-Type': 'multipart/form-data'}})
     
     .then(res => {
+      toast.info("I'm never gonna toast you!");
         console.log(res.data)
         if(res.data=="NO")
         {
@@ -144,6 +165,7 @@ function Register() {
        navigate("/login")
       }
         }).catch((e)=>{
+          setwait(false);
           swal.fire({
             title:"FAIL",
             text:"SUCESSFULLY",
@@ -170,8 +192,10 @@ setEmpphoto('')
   
   return (
 
+
       
       <div   class="  d-flex justify-content-center  mt-5 mb-5 "  >
+     
     
     <form className="w-25  mt-5   border border-info  p-5 border-2 rounded-3 text-center"  onSubmit={handleSubmit}  >
     <h2 class="text-primary  mb-3">REGISTER:</h2>
@@ -221,8 +245,10 @@ setEmpphoto('')
    
    
   </form>
-    
+  <ToastContainer />
   </div>
+ 
+ 
   
     );
   }

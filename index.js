@@ -228,9 +228,9 @@ const upload = multer({
 app.post("/register",upload.single("myfiles"),async(req,res)=>{
        try{
        console.log( "kushal",req.body)
-       console.log(req.file)
+       console.log("knk",req.file)
        const img=await cloud.v2.uploader.upload(req.file.path);
-       console.log(img)
+       console.log("kjbk",img)
     
           
            const addlogin= new login({ 
